@@ -12,9 +12,9 @@ export default function DashboardPage() {
   return (
     <div>
       <div className="relative mb-10 overflow-hidden rounded-2xl bg-hero-gradient p-8 text-white shadow-card sm:p-10">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(212,175,55,0.2),transparent_50%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(124,58,237,0.25),transparent_50%)]" />
         <div className="relative">
-          <p className="text-sm font-medium text-gold-300">Member portal</p>
+          <p className="text-sm font-medium text-purple-300">Member portal</p>
           <h1 className="mt-2 font-display text-3xl font-bold tracking-tight sm:text-4xl">
             Hello, {user?.firstName}
           </h1>
@@ -24,7 +24,7 @@ export default function DashboardPage() {
           {display ? (
             <div className="mt-6 inline-flex items-center gap-2 rounded-xl bg-white/10 px-4 py-2 backdrop-blur-sm">
               <span className="text-xs uppercase tracking-wider text-navy-300">Account</span>
-              <span className="font-mono text-sm font-semibold text-gold-300">{display}</span>
+              <span className="font-mono text-sm font-semibold text-purple-300">{display}</span>
             </div>
           ) : null}
         </div>

@@ -50,14 +50,14 @@ export default function CareerDetailPage() {
   if (!job) {
     return (
       <div className="flex justify-center py-16">
-        <div className="h-8 w-8 animate-spin rounded-full border-2 border-gold-400 border-t-transparent" />
+        <div className="h-8 w-8 animate-spin rounded-full border-2 border-purple-500 border-t-transparent" />
       </div>
     );
   }
 
   return (
     <div className="max-w-2xl">
-      <Link href="/careers" className="mb-6 inline-flex text-sm font-medium text-navy-600 hover:text-gold-600">
+      <Link href="/careers" className="mb-6 inline-flex text-sm font-medium text-navy-600 hover:text-purple-600">
         ← All positions
       </Link>
       <PageHeader title={job.title} description={job.location} />
@@ -70,7 +70,7 @@ export default function CareerDetailPage() {
         {error ? <Alert>{error}</Alert> : null}
         <div>
           <label className="mb-2 block text-sm font-medium text-navy-700">CV / Resume (PDF or Word)</label>
-          <label className="flex cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed border-surface-border bg-surface-muted px-4 py-8 transition-colors hover:border-gold-400 hover:bg-gold-50/50">
+          <label className="flex cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed border-surface-border bg-surface-muted px-4 py-8 transition-colors hover:border-purple-400 hover:bg-purple-50/50">
             <Upload className="mb-2 h-8 w-8 text-navy-400" />
             <span className="text-sm font-medium text-navy-700">
               {file ? file.name : 'Click to upload'}

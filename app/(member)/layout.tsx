@@ -24,7 +24,7 @@ export default function MemberLayout({ children }: { children: React.ReactNode }
   if (!ready || !isAuthenticated || user?.role !== 'RP_MEMBER') {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="h-10 w-10 animate-spin rounded-full border-2 border-gold-400 border-t-transparent" />
+        <div className="h-10 w-10 animate-spin rounded-full border-2 border-purple-500 border-t-transparent" />
       </div>
     );
   }

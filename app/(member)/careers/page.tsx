@@ -29,7 +29,7 @@ export default function CareersPage() {
       <PageHeader title="Careers" description="Open positions at R&P Global Energies." />
       {loading ? (
         <div className="flex justify-center py-12">
-          <div className="h-8 w-8 animate-spin rounded-full border-2 border-gold-400 border-t-transparent" />
+          <div className="h-8 w-8 animate-spin rounded-full border-2 border-purple-500 border-t-transparent" />
         </div>
       ) : jobs.length === 0 ? (
         <div className="panel py-12 text-center text-sm text-navy-500">No open positions at this time.</div>
@@ -50,7 +50,7 @@ export default function CareersPage() {
                     {[job.location, job.department].filter(Boolean).join(' · ') || 'R&P Global Energies'}
                   </p>
                 </div>
-                <ArrowRight className="h-5 w-5 shrink-0 text-navy-300 transition-transform group-hover:translate-x-0.5 group-hover:text-gold-600" />
+                <ArrowRight className="h-5 w-5 shrink-0 text-navy-300 transition-transform group-hover:translate-x-0.5 group-hover:text-purple-600" />
               </Link>
             </li>
           ))}

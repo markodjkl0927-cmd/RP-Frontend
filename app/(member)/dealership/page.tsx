@@ -106,7 +106,7 @@ export default function DealershipPage() {
                 type="checkbox"
                 checked={!!answers[f.key]}
                 onChange={(e) => setField(f.key, e.target.checked)}
-                className="mt-1 h-4 w-4 rounded border-navy-300 text-gold-500 focus:ring-gold-400"
+                className="mt-1 h-4 w-4 rounded border-navy-300 text-purple-600 focus:ring-purple-400"
               />
               {f.label}
             </label>

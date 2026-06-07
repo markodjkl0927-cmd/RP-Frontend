@@ -121,7 +121,7 @@ export default function AdminLocationsPage() {
                     {loc.address}
                   </td>
                   <td className="px-5 py-3 space-x-3">
-                    <button type="button" onClick={() => startEdit(loc)} className="font-medium text-gold-600 hover:text-gold-500">
+                    <button type="button" onClick={() => startEdit(loc)} className="font-medium text-purple-600 hover:text-purple-500">
                       Edit
                     </button>
                     <button type="button" onClick={() => remove(loc.id)} className="font-medium text-red-600 hover:text-red-500">

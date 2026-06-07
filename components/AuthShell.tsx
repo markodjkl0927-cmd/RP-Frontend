@@ -15,7 +15,7 @@ export function AuthShell({
   return (
     <div className="min-h-screen lg:grid lg:grid-cols-2">
       <div className="relative hidden overflow-hidden bg-hero-gradient lg:flex lg:flex-col lg:justify-between lg:p-12">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(212,175,55,0.15),transparent_55%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(124,58,237,0.2),transparent_55%)]" />
         <div className="relative">
           <Logo light />
         </div>
@@ -28,15 +28,15 @@ export function AuthShell({
           </p>
           <ul className="mt-8 space-y-3 text-sm text-navy-200">
             <li className="flex items-center gap-2">
-              <span className="h-1.5 w-1.5 rounded-full bg-gold-400" />
+              <span className="h-1.5 w-1.5 rounded-full bg-purple-400" />
               Digital R&P member card
             </li>
             <li className="flex items-center gap-2">
-              <span className="h-1.5 w-1.5 rounded-full bg-gold-400" />
+              <span className="h-1.5 w-1.5 rounded-full bg-purple-400" />
               Nationwide station locator
             </li>
             <li className="flex items-center gap-2">
-              <span className="h-1.5 w-1.5 rounded-full bg-gold-400" />
+              <span className="h-1.5 w-1.5 rounded-full bg-purple-400" />
               Dealership & career programs
             </li>
           </ul>
@@ -62,7 +62,7 @@ export function AuthShell({
 export function AuthFooterLink({ href, children }: { href: string; children: React.ReactNode }) {
   return (
     <p className="text-center text-sm text-navy-500">
-      <Link href={href} className="font-semibold text-navy-800 hover:text-gold-600 transition-colors">
+      <Link href={href} className="font-semibold text-navy-800 hover:text-purple-600 transition-colors">
         {children}
       </Link>
     </p>

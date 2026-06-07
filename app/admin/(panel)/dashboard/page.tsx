@@ -44,7 +44,7 @@ export default function AdminDashboardPage() {
             </div>
             <h2 className="font-display font-semibold text-navy-900">{title}</h2>
             <p className="mt-2 flex-1 text-sm text-navy-500">{description}</p>
-            <span className="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-gold-600">
+            <span className="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-purple-600">
               Manage
               <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
             </span>

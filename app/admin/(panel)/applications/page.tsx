@@ -236,7 +236,7 @@ export default function AdminApplicationsPage() {
             href={`${apiBase.replace(/\/api$/, '')}${app.resumeUrl}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-1.5 font-semibold text-gold-600 transition-colors hover:text-gold-500"
+            className="inline-flex items-center gap-1.5 font-semibold text-purple-600 transition-colors hover:text-purple-500"
           >
             <Download className="h-4 w-4" />
             Download

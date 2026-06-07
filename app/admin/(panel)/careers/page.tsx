@@ -75,7 +75,7 @@ export default function AdminCareersPage() {
             type="checkbox"
             checked={form.isActive}
             onChange={(e) => setForm({ ...form, isActive: e.target.checked })}
-            className="h-4 w-4 rounded border-navy-300 text-gold-500"
+            className="h-4 w-4 rounded border-navy-300 text-purple-600"
           />
           Visible to members
         </label>

@@ -89,7 +89,7 @@ export default function MemberShell({ children }: { children: React.ReactNode })
                   onClick={() => setUserOpen((o) => !o)}
                   className="flex items-center gap-2 rounded-xl border border-surface-border bg-surface-muted px-2 py-1.5 text-left transition-colors hover:bg-navy-50"
                 >
-                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-navy-800 text-xs font-bold text-gold-300">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-navy-800 text-xs font-bold text-purple-300">
                     {initials}
                   </div>
                   <div className="hidden min-w-0 md:block">
@@ -162,7 +162,7 @@ export default function MemberShell({ children }: { children: React.ReactNode })
                     )}
                   >
                     <Icon
-                      className={clsx('h-5 w-5', active ? 'text-gold-500' : 'text-navy-400')}
+                      className={clsx('h-4 w-4', active ? 'text-purple-500' : 'text-navy-400')}
                       strokeWidth={1.75}
                     />
                     {label}
@@ -171,7 +171,7 @@ export default function MemberShell({ children }: { children: React.ReactNode })
               })}
             </div>
             <div className="mt-3 flex items-center gap-3 border-t border-surface-border pt-3 sm:hidden">
-              <div className="flex h-9 w-9 items-center justify-center rounded-full bg-navy-800 text-xs font-bold text-gold-300">
+              <div className="flex h-9 w-9 items-center justify-center rounded-full bg-navy-800 text-xs font-bold text-purple-300">
                 {initials}
               </div>
               <div className="min-w-0 flex-1">

@@ -31,7 +31,7 @@ export default function CardPage() {
       />
       {loading ? (
         <div className="flex justify-center py-16">
-          <div className="h-10 w-10 animate-spin rounded-full border-2 border-gold-400 border-t-transparent" />
+          <div className="h-10 w-10 animate-spin rounded-full border-2 border-purple-500 border-t-transparent" />
         </div>
       ) : error || !card ? (
         <Alert>Unable to load your card. Please try again later.</Alert>

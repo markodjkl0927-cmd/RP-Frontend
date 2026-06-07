@@ -49,3 +49,6 @@ next-env.d.ts
 # Logs
 logs
 *.log
+
+# Source assets copied into public/
+Logo_RP-Global-Logo-*.png

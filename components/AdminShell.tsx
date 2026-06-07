@@ -40,7 +40,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
               <Link href="/admin/dashboard">
                 <Logo />
               </Link>
-              <span className="hidden rounded-md bg-navy-800 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-gold-300 sm:inline">
+              <span className="hidden rounded-md bg-navy-800 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-purple-300 sm:inline">
                 Admin
               </span>
             </div>
@@ -106,7 +106,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
                     )}
                   >
                     <Icon
-                      className={clsx('h-5 w-5', active ? 'text-gold-500' : 'text-navy-400')}
+                      className={clsx('h-4 w-4', active ? 'text-purple-500' : 'text-navy-400')}
                       strokeWidth={1.75}
                     />
                     {label}
@@ -118,7 +118,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
                 onClick={signOut}
                 className="mt-2 flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-navy-600 hover:bg-surface-muted"
               >
-                <LogOut className="h-5 w-5 text-navy-400" />
+                <LogOut className="h-4 w-4 text-navy-400" />
                 Sign out
               </button>
             </div>
