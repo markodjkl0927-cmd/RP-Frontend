@@ -28,7 +28,7 @@ export function DashboardQuickActions({ actions }: { actions: Action[] }) {
   const reduceMotion = useReducedMotion();
 
   return (
-    <div className="rounded-xl border border-surface-border bg-white p-5">
+    <div className="rounded-md border border-surface-border bg-white p-5">
       <h2 className="font-display text-lg font-semibold text-navy-900">Quick actions</h2>
       <p className="mt-1 text-sm text-navy-500">Common tasks for R&P members</p>
 
@@ -42,11 +42,11 @@ export function DashboardQuickActions({ actions }: { actions: Action[] }) {
           >
             <Link
               href={href}
-              className="group flex items-start gap-3 rounded-lg border border-transparent p-3 transition-colors hover:border-purple-100 hover:bg-purple-50/60"
+              className="group flex items-start gap-3 rounded-md border border-transparent p-3 transition-colors hover:border-purple-100 hover:bg-purple-50/60"
             >
               <motion.span
                 whileHover={reduceMotion ? {} : { scale: 1.1 }}
-                className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-surface-border bg-white text-xs font-bold text-navy-600 transition-colors group-hover:border-purple-200 group-hover:bg-purple-100 group-hover:text-purple-700"
+                className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md border border-surface-border bg-white text-xs font-bold text-navy-600 transition-colors group-hover:border-purple-200 group-hover:bg-purple-100 group-hover:text-purple-700"
               >
                 {step}
               </motion.span>

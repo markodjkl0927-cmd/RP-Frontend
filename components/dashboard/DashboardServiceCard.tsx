@@ -30,7 +30,7 @@ export function DashboardServiceCard({
       >
         <Link
           href={href}
-          className="group relative flex h-full flex-col overflow-hidden rounded-xl border border-surface-border bg-white p-5 transition-colors hover:border-purple-200"
+          className="group relative flex h-full flex-col overflow-hidden rounded-md border border-surface-border bg-white p-5 transition-colors hover:border-purple-200"
         >
           <motion.div
             className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
@@ -44,7 +44,7 @@ export function DashboardServiceCard({
             <motion.div
               whileHover={reduceMotion ? {} : { scale: 1.08, rotate: -3 }}
               transition={{ type: 'spring', stiffness: 400, damping: 18 }}
-              className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-purple-50 text-purple-600 group-hover:bg-purple-100"
+              className="flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-purple-50 text-purple-600 group-hover:bg-purple-100"
             >
               <Icon className="h-5 w-5" strokeWidth={1.75} />
             </motion.div>

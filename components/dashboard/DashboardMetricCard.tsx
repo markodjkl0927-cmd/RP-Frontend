@@ -22,7 +22,7 @@ export function DashboardMetricCard({
     <motion.div
       variants={riseSpring}
       whileHover={reduceMotion ? {} : cardHover}
-      className="group relative overflow-hidden rounded-xl border border-surface-border bg-white p-5"
+      className="group relative overflow-hidden rounded-md border border-surface-border bg-white p-5"
     >
       <div
         className="pointer-events-none absolute -right-4 -top-4 h-24 w-24 rounded-full bg-purple-200/0 blur-2xl transition-all duration-500 group-hover:bg-purple-200/70"
@@ -32,7 +32,7 @@ export function DashboardMetricCard({
         initial={false}
         whileHover={reduceMotion ? {} : { scale: 1.12, rotate: -5 }}
         transition={{ type: 'spring', stiffness: 420, damping: 16 }}
-        className="relative flex h-10 w-10 items-center justify-center rounded-lg bg-purple-50 text-purple-600 ring-1 ring-purple-100"
+        className="relative flex h-10 w-10 items-center justify-center rounded-md bg-purple-50 text-purple-600 ring-1 ring-purple-100"
       >
         <Icon className="h-5 w-5" strokeWidth={1.75} />
       </motion.div>

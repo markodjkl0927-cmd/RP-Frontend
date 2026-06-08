@@ -149,7 +149,7 @@ export default function DashboardPage() {
                   phone={user?.phone}
                 />
               ) : (
-                <div className="rounded-xl border border-surface-border bg-white p-8 text-center text-sm text-navy-500">
+                <div className="rounded-md border border-surface-border bg-white p-8 text-center text-sm text-navy-500">
                   Loading membership details…
                 </div>
               )}
@@ -184,7 +184,7 @@ export default function DashboardPage() {
           viewport={viewportOnce}
           whileHover={reduceMotion ? {} : { y: -4, scale: 1.005 }}
           transition={{ type: 'spring', stiffness: 360, damping: 26 }}
-          className="flex flex-col gap-4 rounded-xl border border-surface-border bg-white px-6 py-8 sm:flex-row sm:items-center sm:justify-between sm:px-8"
+          className="flex flex-col gap-4 rounded-md border border-surface-border bg-white px-6 py-8 sm:flex-row sm:items-center sm:justify-between sm:px-8"
         >
           <div className="max-w-xl">
             <p className="text-xs font-semibold uppercase tracking-wide text-navy-500">Partnership opportunity</p>

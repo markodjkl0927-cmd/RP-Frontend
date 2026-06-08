@@ -42,7 +42,7 @@ export function DashboardMembershipWidget({
   ];
 
   return (
-    <div className="overflow-hidden rounded-xl border border-surface-border bg-white">
+    <div className="overflow-hidden rounded-md border border-surface-border bg-white">
       <div className="flex items-center justify-between gap-4 border-b border-surface-border px-6 py-4">
         <div>
           <h2 className="font-display text-lg font-semibold text-navy-900">Your membership</h2>
@@ -82,7 +82,7 @@ export function DashboardMembershipWidget({
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true }}
-            className="rounded-lg border border-surface-border bg-surface-muted p-4"
+            className="rounded-md border border-surface-border bg-surface-muted p-4"
           >
             <p className="text-xs font-semibold uppercase tracking-wide text-navy-500">Status</p>
             <p className="mt-1 text-sm font-semibold text-navy-900">Active · Digital member card</p>
