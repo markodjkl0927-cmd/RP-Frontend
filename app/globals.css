@@ -32,6 +32,10 @@
     @apply bg-white rounded-2xl border border-surface-border shadow-card;
   }
 
+  .glass-panel {
+    @apply rounded-2xl border border-white/20 bg-white/10 shadow-lg backdrop-blur-md;
+  }
+
   .topnav-link {
     @apply relative px-3 py-2 text-sm font-medium transition-colors;
   }
@@ -47,5 +51,166 @@
 
   .topnav-link-inactive {
     @apply topnav-link text-navy-500 hover:text-navy-800;
+  }
+
+  /* Stripe / Linear-style bento dashboard */
+  .dashboard-bento {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      'card'
+      'locator'
+      'dealership'
+      'careers'
+      'stat1'
+      'stat2'
+      'highlight';
+  }
+
+  @media (min-width: 640px) {
+    .dashboard-bento {
+      grid-template-columns: repeat(2, 1fr);
+      grid-template-areas:
+        'card card'
+        'locator dealership'
+        'careers stat1'
+        'stat2 highlight';
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .dashboard-bento {
+      grid-template-columns: repeat(4, 1fr);
+      grid-template-areas:
+        'card card card locator'
+        'card card card dealership'
+        'careers stat1 stat2 highlight';
+    }
+  }
+
+  .bento-card {
+    grid-area: card;
+  }
+  .bento-locator {
+    grid-area: locator;
+  }
+  .bento-dealership {
+    grid-area: dealership;
+  }
+  .bento-careers {
+    grid-area: careers;
+  }
+  .bento-stat-network {
+    grid-area: stat1;
+  }
+  .bento-stat-membership {
+    grid-area: stat2;
+  }
+  .bento-highlight {
+    grid-area: highlight;
+  }
+
+  .animate-fade-in-up {
+    animation: fade-in-up 0.6s ease-out both;
+  }
+
+  .animate-fade-in {
+    animation: fade-in 0.5s ease-out both;
+  }
+
+  .animate-gradient-shift {
+    background-size: 200% 200%;
+    animation: gradient-shift 8s ease infinite;
+  }
+
+  .animate-float-slow {
+    animation: float 6s ease-in-out infinite;
+  }
+
+  .animate-float-delayed {
+    animation: float 7s ease-in-out 1s infinite;
+  }
+
+  .animate-glow-pulse {
+    animation: glow-pulse 4s ease-in-out infinite;
+  }
+
+  .animate-shimmer {
+    animation: shimmer 2.5s ease-in-out infinite;
+  }
+}
+
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes gradient-shift {
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0) scale(1);
+  }
+  50% {
+    transform: translateY(-14px) scale(1.04);
+  }
+}
+
+@keyframes glow-pulse {
+  0%,
+  100% {
+    opacity: 0.35;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.65;
+    transform: scale(1.08);
+  }
+}
+
+@keyframes shimmer {
+  0%,
+  100% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-fade-in-up,
+  .animate-fade-in,
+  .animate-gradient-shift,
+  .animate-float-slow,
+  .animate-float-delayed,
+  .animate-glow-pulse,
+  .animate-shimmer {
+    animation: none;
   }
 }

@@ -65,17 +65,22 @@ export default function MemberShell({ children }: { children: React.ReactNode })
             </Link>
 
             <nav className="hidden items-center gap-1 lg:flex" aria-label="Main">
-              {nav.map(({ href, label }) => {
+              {nav.map(({ href, label, icon: Icon }) => {
                 const active = pathname === href;
                 return (
                   <Link
                     key={href}
                     href={href}
                     className={clsx(
-                      'topnav-link',
+                      'topnav-link inline-flex items-center gap-1.5',
                       active ? 'topnav-link-active' : 'topnav-link-inactive'
                     )}
                   >
+                    <Icon
+                      className={clsx('h-3.5 w-3.5 shrink-0', active ? 'text-purple-500' : 'text-navy-400')}
+                      strokeWidth={1.75}
+                      aria-hidden
+                    />
                     {label}
                   </Link>
                 );
