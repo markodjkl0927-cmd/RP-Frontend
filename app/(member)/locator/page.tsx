@@ -1,30 +1,28 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { MapPin, Phone } from 'lucide-react';
+import { motion, useReducedMotion } from 'framer-motion';
 import api from '@/lib/api';
-import { PageHeader } from '@/components/ui/PageHeader';
-import { Select } from '@/components/ui/Select';
-
-type Location = {
-  id: string;
-  name?: string | null;
-  address: string;
-  phone?: string | null;
-  city: string;
-  state: string;
-};
+import { LocatorFilters } from '@/components/locator/LocatorFilters';
+import { LocatorResults } from '@/components/locator/LocatorResults';
+import type { Station } from '@/components/locator/StationCard';
 
 export default function LocatorPage() {
   const [states, setStates] = useState<string[]>([]);
   const [cities, setCities] = useState<string[]>([]);
-  const [locations, setLocations] = useState<Location[]>([]);
+  const [locations, setLocations] = useState<Station[]>([]);
   const [state, setState] = useState('');
   const [city, setCity] = useState('');
-  const [loading, setLoading] = useState(true);
+  const [loadingStates, setLoadingStates] = useState(true);
+  const [loadingCities, setLoadingCities] = useState(false);
+  const [loadingLocations, setLoadingLocations] = useState(false);
+  const reduceMotion = useReducedMotion();
 
   useEffect(() => {
-    api.get('/rp/locator/states').then((res) => setStates(res.data.states || [])).finally(() => setLoading(false));
+    api
+      .get('/rp/locator/states')
+      .then((res) => setStates(res.data.states || []))
+      .finally(() => setLoadingStates(false));
   }, []);
 
   useEffect(() => {
@@ -33,7 +31,11 @@ export default function LocatorPage() {
       setCity('');
       return;
     }
-    api.get('/rp/locator/cities', { params: { state } }).then((res) => setCities(res.data.cities || []));
+    setLoadingCities(true);
+    api
+      .get('/rp/locator/cities', { params: { state } })
+      .then((res) => setCities(res.data.cities || []))
+      .finally(() => setLoadingCities(false));
     setCity('');
   }, [state]);
 
@@ -42,61 +44,58 @@ export default function LocatorPage() {
       setLocations([]);
       return;
     }
-    api.get('/rp/locator/locations', { params: { state, city } }).then((res) => setLocations(res.data.locations || []));
+    setLoadingLocations(true);
+    api
+      .get('/rp/locator/locations', { params: { state, city } })
+      .then((res) => setLocations(res.data.locations || []))
+      .finally(() => setLoadingLocations(false));
   }, [state, city]);
+
+  const clearFilters = () => {
+    setState('');
+    setCity('');
+    setLocations([]);
+  };
 
   return (
     <div>
-      <PageHeader
-        title="Station locator"
-        description="Find R&P fuel station addresses by state and city."
-      />
+      <motion.div
+        initial={reduceMotion ? false : { opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
+        className="mb-8"
+      >
+        <p className="text-xs font-semibold uppercase tracking-wide text-purple-600">Fuel network</p>
+        <h1 className="mt-1 font-display text-2xl font-bold tracking-tight text-navy-900 sm:text-3xl">
+          Station locator
+        </h1>
+        <p className="mt-2 max-w-2xl text-sm leading-relaxed text-navy-500">
+          Browse R&P fuel stations across the United States. Filter by state and city, then get directions or
+          call a station directly.
+        </p>
+      </motion.div>
 
-      <div className="panel mb-8 grid gap-4 p-6 sm:grid-cols-2">
-        <Select label="State" value={state} onChange={(e) => setState(e.target.value)} disabled={loading}>
-          <option value="">Select state</option>
-          {states.map((s) => (
-            <option key={s} value={s}>
-              {s}
-            </option>
-          ))}
-        </Select>
-        <Select label="City" value={city} onChange={(e) => setCity(e.target.value)} disabled={!state}>
-          <option value="">Select city</option>
-          {cities.map((c) => (
-            <option key={c} value={c}>
-              {c}
-            </option>
-          ))}
-        </Select>
+      <div className="grid gap-6 lg:grid-cols-[minmax(260px,300px)_1fr] lg:items-start">
+        <LocatorFilters
+          states={states}
+          cities={cities}
+          state={state}
+          city={city}
+          loadingStates={loadingStates}
+          loadingCities={loadingCities}
+          onStateChange={setState}
+          onCityChange={setCity}
+          onClear={clearFilters}
+          stationCount={locations.length}
+        />
+
+        <LocatorResults
+          state={state}
+          city={city}
+          locations={locations}
+          loading={loadingLocations}
+        />
       </div>
-
-      {state && city && locations.length === 0 ? (
-        <p className="text-center text-sm text-navy-500 py-8">No stations listed for this area yet.</p>
-      ) : null}
-
-      <ul className="space-y-3">
-        {locations.map((loc) => (
-          <li key={loc.id} className="panel flex gap-4 p-5">
-            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-navy-50 text-navy-700">
-              <MapPin className="h-5 w-5" strokeWidth={1.75} />
-            </div>
-            <div>
-              <p className="font-semibold text-navy-900">{loc.name || 'R&P Fuel Station'}</p>
-              <p className="mt-1 text-sm text-navy-600">{loc.address}</p>
-              <p className="text-sm text-navy-500">
-                {loc.city}, {loc.state}
-              </p>
-              {loc.phone ? (
-                <p className="mt-2 flex items-center gap-1.5 text-sm text-navy-600">
-                  <Phone className="h-4 w-4" />
-                  {loc.phone}
-                </p>
-              ) : null}
-            </div>
-          </li>
-        ))}
-      </ul>
     </div>
   );
 }
