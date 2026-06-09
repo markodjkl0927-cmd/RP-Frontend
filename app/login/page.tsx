@@ -81,6 +81,11 @@ export default function LoginPage() {
           onChange={(e) => setPassword(e.target.value)}
           required
         />
+        <p className="text-right text-sm">
+          <Link href="/recover" className="font-medium text-purple-600 hover:text-purple-700">
+            Forgot account number or password?
+          </Link>
+        </p>
         <Button type="submit" className="w-full" loading={loading}>
           Sign in
         </Button>

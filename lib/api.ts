@@ -18,7 +18,13 @@ api.interceptors.response.use(
   (error) => {
     if (error.response?.status === 401 && typeof window !== 'undefined') {
       const path = window.location.pathname;
-      if (!path.startsWith('/login') && !path.startsWith('/register') && !path.startsWith('/admin/login')) {
+      if (
+        !path.startsWith('/login') &&
+        !path.startsWith('/register') &&
+        !path.startsWith('/recover') &&
+        !path.startsWith('/reset-password') &&
+        !path.startsWith('/admin/login')
+      ) {
         useRpAuthStore.getState().clearAuth();
         window.location.href = path.startsWith('/admin') ? '/admin/login' : '/login';
       }
