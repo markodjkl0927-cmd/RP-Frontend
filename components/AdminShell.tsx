@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { Briefcase, FileText, LayoutDashboard, LogOut, MapPin, Menu, X } from 'lucide-react';
+import { Briefcase, FileText, LayoutDashboard, LogOut, MapPin, Menu, Users, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import clsx from 'clsx';
 
@@ -11,6 +11,7 @@ import { Logo } from './Logo';
 
 const links = [
   { href: '/admin/dashboard', label: 'Overview', icon: LayoutDashboard },
+  { href: '/admin/members', label: 'Members', icon: Users },
   { href: '/admin/locations', label: 'Locations', icon: MapPin },
   { href: '/admin/careers', label: 'Careers', icon: Briefcase },
   { href: '/admin/applications', label: 'Applications', icon: FileText },

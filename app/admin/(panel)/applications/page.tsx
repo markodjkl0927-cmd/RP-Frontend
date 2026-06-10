@@ -1,10 +1,19 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { ChevronDown, ChevronRight, Download } from 'lucide-react';
 import api from '@/lib/api';
+import { CareerStatusControl, CareerStatus } from '@/components/admin/CareerStatusControl';
+import {
+  DealershipStatusControl,
+  DealershipStatus,
+} from '@/components/admin/DealershipStatusControl';
 import { PageHeader } from '@/components/ui/PageHeader';
-import { DataTable, DataTableColumn, StatusBadge } from '@/components/ui/DataTable';
+import { Input } from '@/components/ui/Input';
+import { Select } from '@/components/ui/Select';
+import { Button } from '@/components/ui/Button';
+import { DataTable, DataTableColumn } from '@/components/ui/DataTable';
+import { PaginationBar, PaginationInfo } from '@/components/ui/PaginationBar';
 
 const apiBase = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
 
@@ -78,17 +87,141 @@ function DetailGrid({ items }: { items: { label: string; value: string }[] }) {
 export default function AdminApplicationsPage() {
   const [dealership, setDealership] = useState<DealershipApplication[]>([]);
   const [careers, setCareers] = useState<CareerApplication[]>([]);
+  const [dealershipPagination, setDealershipPagination] = useState<PaginationInfo>({
+    page: 1,
+    limit: 20,
+    total: 0,
+    totalPages: 0,
+  });
+  const [careerPagination, setCareerPagination] = useState<PaginationInfo>({
+    page: 1,
+    limit: 20,
+    total: 0,
+    totalPages: 0,
+  });
+  const [dealershipSearch, setDealershipSearch] = useState('');
+  const [appliedDealershipSearch, setAppliedDealershipSearch] = useState('');
+  const [dealershipStatusFilter, setDealershipStatusFilter] = useState('ALL');
+  const [careerSearch, setCareerSearch] = useState('');
+  const [appliedCareerSearch, setAppliedCareerSearch] = useState('');
+  const [careerStatusFilter, setCareerStatusFilter] = useState('ALL');
   const [expandedDealershipId, setExpandedDealershipId] = useState<string | null>(null);
+  const [expandedCareerId, setExpandedCareerId] = useState<string | null>(null);
+  const [updatingDealershipId, setUpdatingDealershipId] = useState<string | null>(null);
+  const [updatingCareerId, setUpdatingCareerId] = useState<string | null>(null);
+  const [dealershipStatusErrors, setDealershipStatusErrors] = useState<Record<string, string>>({});
+  const [careerStatusErrors, setCareerStatusErrors] = useState<Record<string, string>>({});
+
+  const loadDealership = useCallback(
+    async (page = 1) => {
+      const { data } = await api.get('/rp/admin/dealership-applications', {
+        params: {
+          page,
+          limit: 20,
+          q: appliedDealershipSearch.trim() || undefined,
+          status: dealershipStatusFilter,
+        },
+      });
+      setDealership(data.applications || []);
+      setDealershipPagination(data.pagination || { page: 1, limit: 20, total: 0, totalPages: 0 });
+    },
+    [appliedDealershipSearch, dealershipStatusFilter]
+  );
+
+  const loadCareers = useCallback(
+    async (page = 1) => {
+      const { data } = await api.get('/rp/admin/career-applications', {
+        params: {
+          page,
+          limit: 20,
+          q: appliedCareerSearch.trim() || undefined,
+          status: careerStatusFilter,
+        },
+      });
+      setCareers(data.applications || []);
+      setCareerPagination(data.pagination || { page: 1, limit: 20, total: 0, totalPages: 0 });
+    },
+    [appliedCareerSearch, careerStatusFilter]
+  );
 
   useEffect(() => {
-    Promise.all([
-      api.get('/rp/admin/dealership-applications'),
-      api.get('/rp/admin/career-applications'),
-    ]).then(([d, c]) => {
-      setDealership(d.data.applications || []);
-      setCareers(c.data.applications || []);
+    loadDealership(1);
+  }, [loadDealership]);
+
+  useEffect(() => {
+    loadCareers(1);
+  }, [loadCareers]);
+
+  const updateDealershipStatus = async (id: string, status: DealershipStatus) => {
+    setUpdatingDealershipId(id);
+    setDealershipStatusErrors((prev) => {
+      const next = { ...prev };
+      delete next[id];
+      return next;
     });
-  }, []);
+    try {
+      const { data } = await api.patch(`/rp/admin/dealership-applications/${id}`, { status });
+      const updated = data.application as DealershipApplication;
+      setDealership((prev) =>
+        prev.map((app) =>
+          app.id === id
+            ? {
+                ...app,
+                status: updated.status,
+                member: updated.member ?? app.member,
+              }
+            : app
+        )
+      );
+      if (dealershipStatusFilter !== 'ALL' && updated.status !== dealershipStatusFilter) {
+        loadDealership(dealershipPagination.page);
+      }
+    } catch (err: unknown) {
+      const ex = err as { response?: { data?: { error?: string } } };
+      setDealershipStatusErrors((prev) => ({
+        ...prev,
+        [id]: ex.response?.data?.error || 'Failed to update status',
+      }));
+    } finally {
+      setUpdatingDealershipId(null);
+    }
+  };
+
+  const updateCareerStatus = async (id: string, status: CareerStatus) => {
+    setUpdatingCareerId(id);
+    setCareerStatusErrors((prev) => {
+      const next = { ...prev };
+      delete next[id];
+      return next;
+    });
+    try {
+      const { data } = await api.patch(`/rp/admin/career-applications/${id}`, { status });
+      const updated = data.application as CareerApplication;
+      setCareers((prev) =>
+        prev.map((app) =>
+          app.id === id
+            ? {
+                ...app,
+                status: updated.status,
+                job: updated.job ?? app.job,
+                member: updated.member ?? app.member,
+              }
+            : app
+        )
+      );
+      if (careerStatusFilter !== 'ALL' && updated.status !== careerStatusFilter) {
+        loadCareers(careerPagination.page);
+      }
+    } catch (err: unknown) {
+      const ex = err as { response?: { data?: { error?: string } } };
+      setCareerStatusErrors((prev) => ({
+        ...prev,
+        [id]: ex.response?.data?.error || 'Failed to update status',
+      }));
+    } finally {
+      setUpdatingCareerId(null);
+    }
+  };
 
   const dealershipColumns = useMemo<DataTableColumn<DealershipApplication>[]>(
     () => [
@@ -171,14 +304,42 @@ export default function AdminApplicationsPage() {
       {
         id: 'status',
         header: 'Status',
-        cell: (app) => <StatusBadge status={app.status} />,
+        cell: (app) => (
+          <DealershipStatusControl
+            applicationId={app.id}
+            status={app.status}
+            updating={updatingDealershipId === app.id}
+            error={dealershipStatusErrors[app.id]}
+            onStatusChange={updateDealershipStatus}
+            compact
+          />
+        ),
       },
     ],
-    [expandedDealershipId]
+    [expandedDealershipId, updatingDealershipId, dealershipStatusErrors]
   );
 
   const careerColumns = useMemo<DataTableColumn<CareerApplication>[]>(
     () => [
+      {
+        id: 'expand',
+        header: '',
+        cellClassName: 'w-10',
+        cell: (app) => {
+          const open = expandedCareerId === app.id;
+          return (
+            <button
+              type="button"
+              onClick={() => setExpandedCareerId(open ? null : app.id)}
+              className="rounded-lg p-1 text-navy-500 transition-colors hover:bg-surface-muted hover:text-navy-800"
+              aria-expanded={open}
+              aria-label={open ? 'Collapse details' : 'Expand details'}
+            >
+              {open ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
+            </button>
+          );
+        },
+      },
       {
         id: 'submitted',
         header: 'Submitted',
@@ -225,7 +386,16 @@ export default function AdminApplicationsPage() {
       {
         id: 'status',
         header: 'Status',
-        cell: (app) => <StatusBadge status={app.status} />,
+        cell: (app) => (
+          <CareerStatusControl
+            applicationId={app.id}
+            status={app.status}
+            updating={updatingCareerId === app.id}
+            error={careerStatusErrors[app.id]}
+            onStatusChange={updateCareerStatus}
+            compact
+          />
+        ),
       },
       {
         id: 'resume',
@@ -244,7 +414,7 @@ export default function AdminApplicationsPage() {
         ),
       },
     ],
-    []
+    [expandedCareerId, updatingCareerId, careerStatusErrors]
   );
 
   return (
@@ -252,14 +422,54 @@ export default function AdminApplicationsPage() {
       <PageHeader title="Applications" description="Dealership and career submissions from members." />
 
       <section>
-        <div className="mb-4 flex items-end justify-between gap-4">
-          <div>
-            <h2 className="font-display text-lg font-semibold text-navy-900">Dealership program</h2>
-            <p className="mt-1 text-sm text-navy-500">
-              {dealership.length} submission{dealership.length === 1 ? '' : 's'}. Expand a row for full details.
-            </p>
-          </div>
+        <div className="mb-4">
+          <h2 className="font-display text-lg font-semibold text-navy-900">Dealership program</h2>
+          <p className="mt-1 text-sm text-navy-500">Expand a row for full details and status actions.</p>
         </div>
+
+        <div className="panel mb-4 flex flex-col gap-4 p-4 sm:flex-row sm:items-end">
+          <Input
+            label="Search dealership"
+            placeholder="Member name, email, or account"
+            value={dealershipSearch}
+            onChange={(e) => setDealershipSearch(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                e.preventDefault();
+                setAppliedDealershipSearch(dealershipSearch);
+              }
+            }}
+            className="flex-1"
+          />
+          <Select
+            label="Status"
+            value={dealershipStatusFilter}
+            onChange={(e) => setDealershipStatusFilter(e.target.value)}
+            className="w-full sm:w-44"
+          >
+            <option value="ALL">All statuses</option>
+            <option value="NEW">New</option>
+            <option value="UNDER_REVIEW">Under review</option>
+            <option value="APPROVED">Approved</option>
+            <option value="REJECTED">Rejected</option>
+          </Select>
+          <Button
+            type="button"
+            variant="secondary"
+            className="h-11 shrink-0"
+            onClick={() => setAppliedDealershipSearch(dealershipSearch)}
+          >
+            Search
+          </Button>
+        </div>
+
+        <PaginationBar
+          pagination={dealershipPagination}
+          onPageChange={loadDealership}
+          noun="submission"
+          className="mb-4"
+        />
+
         <DataTable
           columns={dealershipColumns}
           data={dealership}
@@ -277,28 +487,121 @@ export default function AdminApplicationsPage() {
               })),
             ];
             return (
-              <div className="rounded-xl border border-surface-border bg-white p-4">
-                <p className="mb-3 text-xs font-semibold uppercase tracking-wide text-navy-500">Application details</p>
-                <DetailGrid items={items} />
+              <div className="space-y-4">
+                <DealershipStatusControl
+                  applicationId={app.id}
+                  status={app.status}
+                  updating={updatingDealershipId === app.id}
+                  error={dealershipStatusErrors[app.id]}
+                  onStatusChange={updateDealershipStatus}
+                />
+                <div className="rounded-xl border border-surface-border bg-white p-4">
+                  <p className="mb-3 text-xs font-semibold uppercase tracking-wide text-navy-500">
+                    Application details
+                  </p>
+                  <DetailGrid items={items} />
+                </div>
               </div>
             );
           }}
+        />
+
+        <PaginationBar
+          pagination={dealershipPagination}
+          onPageChange={loadDealership}
+          noun="submission"
+          className="mt-4"
         />
       </section>
 
       <section>
         <div className="mb-4">
           <h2 className="font-display text-lg font-semibold text-navy-900">Career applications</h2>
-          <p className="mt-1 text-sm text-navy-500">
-            {careers.length} application{careers.length === 1 ? '' : 's'}.
-          </p>
+          <p className="mt-1 text-sm text-navy-500">Expand a row for hiring actions and cover letter.</p>
         </div>
+
+        <div className="panel mb-4 flex flex-col gap-4 p-4 sm:flex-row sm:items-end">
+          <Input
+            label="Search careers"
+            placeholder="Applicant, job title, or account"
+            value={careerSearch}
+            onChange={(e) => setCareerSearch(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                e.preventDefault();
+                setAppliedCareerSearch(careerSearch);
+              }
+            }}
+            className="flex-1"
+          />
+          <Select
+            label="Status"
+            value={careerStatusFilter}
+            onChange={(e) => setCareerStatusFilter(e.target.value)}
+            className="w-full sm:w-44"
+          >
+            <option value="ALL">All statuses</option>
+            <option value="NEW">New</option>
+            <option value="UNDER_REVIEW">Under review</option>
+            <option value="INTERVIEW">Interview</option>
+            <option value="HIRED">Hired</option>
+            <option value="REJECTED">Rejected</option>
+          </Select>
+          <Button
+            type="button"
+            variant="secondary"
+            className="h-11 shrink-0"
+            onClick={() => setAppliedCareerSearch(careerSearch)}
+          >
+            Search
+          </Button>
+        </div>
+
+        <PaginationBar pagination={careerPagination} onPageChange={loadCareers} noun="application" className="mb-4" />
+
         <DataTable
           columns={careerColumns}
           data={careers}
           getRowId={(app) => app.id}
           emptyMessage="No submissions yet."
+          expandedRowId={expandedCareerId}
+          renderExpandedRow={(app) => (
+            <div className="space-y-4">
+              <CareerStatusControl
+                applicationId={app.id}
+                status={app.status}
+                updating={updatingCareerId === app.id}
+                error={careerStatusErrors[app.id]}
+                onStatusChange={updateCareerStatus}
+              />
+              <div className="rounded-xl border border-surface-border bg-white p-4">
+                <p className="mb-3 text-xs font-semibold uppercase tracking-wide text-navy-500">Application details</p>
+                <DetailGrid
+                  items={[
+                    { label: 'Position', value: app.job.title },
+                    { label: 'Applicant email', value: app.member.email },
+                    { label: 'Applicant phone', value: formatAnswerValue(app.member.phone || undefined) },
+                    {
+                      label: 'Cover letter',
+                      value: app.coverLetter?.trim() ? app.coverLetter : '—',
+                    },
+                  ]}
+                />
+                <a
+                  href={`${apiBase.replace(/\/api$/, '')}${app.resumeUrl}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-purple-600 transition-colors hover:text-purple-500"
+                >
+                  <Download className="h-4 w-4" />
+                  Download resume
+                </a>
+              </div>
+            </div>
+          )}
         />
+
+        <PaginationBar pagination={careerPagination} onPageChange={loadCareers} noun="application" className="mt-4" />
       </section>
     </div>
   );

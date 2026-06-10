@@ -18,6 +18,7 @@ interface AuthState {
   token: string | null;
   isAuthenticated: boolean;
   setAuth: (user: RpUser, token: string) => void;
+  updateUser: (patch: Partial<RpUser>) => void;
   clearAuth: () => void;
 }
 
@@ -34,6 +35,10 @@ export const useRpAuthStore = create<AuthState>()(
         }
         set({ user, token, isAuthenticated: true });
       },
+      updateUser: (patch) =>
+        set((state) => ({
+          user: state.user ? { ...state.user, ...patch } : state.user,
+        })),
       clearAuth: () => {
         if (typeof window !== 'undefined') {
           localStorage.removeItem('rp-token');

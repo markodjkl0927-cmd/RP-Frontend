@@ -11,6 +11,7 @@ import {
   LogOut,
   MapPin,
   Menu,
+  Settings,
   X,
 } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
@@ -113,6 +114,13 @@ export default function MemberShell({ children }: { children: React.ReactNode })
                       </p>
                       <p className="truncate text-xs text-navy-500">{user?.email}</p>
                     </div>
+                    <Link
+                      href="/settings"
+                      className="flex w-full items-center gap-2 px-4 py-2.5 text-sm text-navy-700 hover:bg-surface-muted"
+                    >
+                      <Settings className="h-4 w-4" />
+                      Account settings
+                    </Link>
                     <button
                       type="button"
                       onClick={signOut}
@@ -175,16 +183,25 @@ export default function MemberShell({ children }: { children: React.ReactNode })
                 );
               })}
             </div>
-            <div className="mt-3 flex items-center gap-3 border-t border-surface-border pt-3 sm:hidden">
-              <div className="flex h-9 w-9 items-center justify-center rounded-full bg-navy-800 text-xs font-bold text-purple-300">
-                {initials}
+            <div className="mt-3 border-t border-surface-border pt-3 sm:hidden">
+              <div className="flex items-center gap-3">
+                <div className="flex h-9 w-9 items-center justify-center rounded-full bg-navy-800 text-xs font-bold text-purple-300">
+                  {initials}
+                </div>
+                <div className="min-w-0 flex-1">
+                  <p className="truncate text-sm font-medium text-navy-900">
+                    {user?.firstName} {user?.lastName}
+                  </p>
+                  <p className="text-xs text-navy-500">Member account</p>
+                </div>
               </div>
-              <div className="min-w-0 flex-1">
-                <p className="truncate text-sm font-medium text-navy-900">
-                  {user?.firstName} {user?.lastName}
-                </p>
-                <p className="text-xs text-navy-500">Member account</p>
-              </div>
+              <Link
+                href="/settings"
+                className="mt-3 flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-navy-600 hover:bg-surface-muted hover:text-navy-900"
+              >
+                <Settings className="h-4 w-4 text-navy-400" strokeWidth={1.75} />
+                Account settings
+              </Link>
             </div>
           </nav>
         ) : null}

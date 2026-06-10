@@ -94,13 +94,21 @@ export function DataTable<T>({
 export function StatusBadge({ status }: { status: string }) {
   const normalized = status.toUpperCase();
   const styles =
-    normalized === 'NEW'
+    normalized === 'ACTIVE'
+      ? 'bg-emerald-50 text-emerald-700 ring-emerald-200/80'
+      : normalized === 'INACTIVE' || normalized === 'SUSPENDED'
+        ? 'bg-red-50 text-red-700 ring-red-200/80'
+        : normalized === 'NEW'
       ? 'bg-amber-50 text-amber-700 ring-amber-200/80'
-      : normalized === 'APPROVED' || normalized === 'ACCEPTED'
-        ? 'bg-emerald-50 text-emerald-700 ring-emerald-200/80'
-        : normalized === 'REJECTED' || normalized === 'DECLINED'
-          ? 'bg-red-50 text-red-700 ring-red-200/80'
-          : 'bg-navy-50 text-navy-600 ring-surface-border';
+      : normalized === 'UNDER_REVIEW' || normalized === 'IN_REVIEW'
+        ? 'bg-sky-50 text-sky-700 ring-sky-200/80'
+        : normalized === 'INTERVIEW'
+          ? 'bg-violet-50 text-violet-700 ring-violet-200/80'
+          : normalized === 'APPROVED' || normalized === 'ACCEPTED' || normalized === 'HIRED'
+          ? 'bg-emerald-50 text-emerald-700 ring-emerald-200/80'
+          : normalized === 'REJECTED' || normalized === 'DECLINED'
+            ? 'bg-red-50 text-red-700 ring-red-200/80'
+            : 'bg-navy-50 text-navy-600 ring-surface-border';
 
   return (
     <span
