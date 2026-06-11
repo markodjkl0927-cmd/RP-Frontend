@@ -28,6 +28,7 @@ export default function AdminLocationsPage() {
   const [appliedSearch, setAppliedSearch] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [geocoding, setGeocoding] = useState(false);
 
   const load = useCallback(
     async (page = 1) => {
@@ -85,6 +86,20 @@ export default function AdminLocationsPage() {
     });
   };
 
+  const geocodeMissing = async () => {
+    setGeocoding(true);
+    try {
+      const { data } = await api.post('/rp/admin/locations/geocode-missing');
+      alert(`Geocoded ${data.geocoded} of ${data.scanned} location(s).`);
+      load(pagination.page);
+    } catch (err: unknown) {
+      const ex = err as { response?: { data?: { error?: string } } };
+      alert(ex.response?.data?.error || 'Failed to geocode locations');
+    } finally {
+      setGeocoding(false);
+    }
+  };
+
   const remove = async (id: string) => {
     if (!confirm('Delete this location?')) return;
     try {
@@ -98,7 +113,10 @@ export default function AdminLocationsPage() {
 
   return (
     <div className="space-y-6">
-      <PageHeader title="Fuel locations" description="Stations shown in the member station locator." />
+      <PageHeader
+        title="Fuel locations"
+        description="Stations shown in the member station locator. Addresses are geocoded automatically for the interactive map."
+      />
 
       <form onSubmit={save} className="panel grid gap-4 p-6 sm:grid-cols-2">
         <Input
@@ -150,6 +168,9 @@ export default function AdminLocationsPage() {
         />
         <Button type="button" variant="secondary" className="h-11 shrink-0" onClick={() => setAppliedSearch(search)}>
           Search
+        </Button>
+        <Button type="button" variant="secondary" className="h-11 shrink-0" onClick={geocodeMissing} disabled={geocoding}>
+          {geocoding ? 'Geocoding…' : 'Geocode missing'}
         </Button>
       </div>
 

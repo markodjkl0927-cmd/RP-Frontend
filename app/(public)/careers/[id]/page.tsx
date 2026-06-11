@@ -6,7 +6,9 @@ import Link from 'next/link';
 import { motion, useReducedMotion } from 'framer-motion';
 import { ArrowLeft, Briefcase, MapPin } from 'lucide-react';
 import api from '@/lib/api';
+import { ApplySignInPrompt } from '@/components/careers/ApplySignInPrompt';
 import { JobApplicationForm } from '@/components/careers/JobApplicationForm';
+import { useRpAuthStore } from '@/lib/store';
 
 type Job = {
   title: string;
@@ -18,9 +20,12 @@ type Job = {
 export default function CareerDetailPage() {
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
+  const { isAuthenticated, user } = useRpAuthStore();
   const [job, setJob] = useState<Job | null>(null);
   const [notFound, setNotFound] = useState(false);
   const reduceMotion = useReducedMotion();
+  const isMember = isAuthenticated && user?.role === 'RP_MEMBER';
+  const returnPath = `/careers/${id}`;
 
   useEffect(() => {
     if (!id) return;
@@ -101,9 +106,7 @@ export default function CareerDetailPage() {
           className="rounded-md border border-surface-border bg-white p-5 sm:p-6 lg:sticky lg:top-20"
         >
           <h2 className="text-sm font-semibold text-navy-900">About this role</h2>
-          <div className="mt-4 whitespace-pre-wrap text-sm leading-relaxed text-navy-700">
-            {job.description}
-          </div>
+          <div className="mt-4 whitespace-pre-wrap text-sm leading-relaxed text-navy-700">{job.description}</div>
         </motion.section>
 
         <motion.div
@@ -111,7 +114,11 @@ export default function CareerDetailPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.14, duration: 0.45 }}
         >
-          <JobApplicationForm jobTitle={job.title} onSubmit={submitApplication} />
+          {isMember ? (
+            <JobApplicationForm jobTitle={job.title} onSubmit={submitApplication} />
+          ) : (
+            <ApplySignInPrompt returnPath={returnPath} />
+          )}
         </motion.div>
       </div>
     </div>

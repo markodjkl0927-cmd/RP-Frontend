@@ -1,19 +1,22 @@
 'use client';
 
-import { useState } from 'react';
+import { Suspense, useState } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { CheckCircle2 } from 'lucide-react';
 import api from '@/lib/api';
 import { useRpAuthStore, RpUser } from '@/lib/store';
+import { safeNextPath } from '@/lib/routes';
 import { AuthShell, AuthFooterLink } from '@/components/AuthShell';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
 import { Alert } from '@/components/ui/Alert';
 
-export default function RegisterPage() {
+function RegisterForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const setAuth = useRpAuthStore((s) => s.setAuth);
+  const nextPath = safeNextPath(searchParams.get('next'));
   const [form, setForm] = useState({
     firstName: '',
     lastName: '',
@@ -76,8 +79,8 @@ export default function RegisterPage() {
           </div>
           <p className="text-sm text-navy-500">We also sent this number to your email.</p>
           <p className="mt-6 font-mono text-3xl font-bold tracking-wider text-navy-900">{formatted}</p>
-          <Button type="button" className="mt-8 w-full" onClick={() => router.push('/dashboard')}>
-            Continue to dashboard
+          <Button type="button" className="mt-8 w-full" onClick={() => router.push(nextPath)}>
+            {nextPath.startsWith('/careers') ? 'Continue to application' : 'Continue to dashboard'}
           </Button>
         </div>
       </AuthShell>
@@ -140,5 +143,19 @@ export default function RegisterPage() {
         </Button>
       </form>
     </AuthShell>
+  );
+}
+
+export default function RegisterPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex min-h-screen items-center justify-center">
+          <div className="h-10 w-10 animate-spin rounded-full border-2 border-purple-500 border-t-transparent" />
+        </div>
+      }
+    >
+      <RegisterForm />
+    </Suspense>
   );
 }

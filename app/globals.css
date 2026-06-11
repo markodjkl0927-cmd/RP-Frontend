@@ -214,3 +214,30 @@
     animation: none;
   }
 }
+
+.station-map {
+  z-index: 0;
+}
+
+.rp-station-marker {
+  background: transparent;
+  border: none;
+}
+
+.rp-station-marker__dot {
+  display: block;
+  width: 14px;
+  height: 14px;
+  border: 3px solid #fff;
+  border-radius: 9999px;
+  background: #7c3aed;
+  box-shadow: 0 2px 8px rgba(91, 33, 182, 0.45);
+}
+
+.rp-station-marker__dot--selected {
+  width: 18px;
+  height: 18px;
+  margin: -2px 0 0 -2px;
+  background: #5b21b6;
+  box-shadow: 0 0 0 4px rgba(167, 139, 250, 0.45);
+}

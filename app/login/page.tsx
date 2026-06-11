@@ -1,18 +1,21 @@
 'use client';
 
-import { useState } from 'react';
+import { Suspense, useState } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import api from '@/lib/api';
 import { useRpAuthStore, RpUser } from '@/lib/store';
+import { safeNextPath } from '@/lib/routes';
 import { AuthShell, AuthFooterLink } from '@/components/AuthShell';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
 import { Alert } from '@/components/ui/Alert';
 
-export default function LoginPage() {
+function LoginForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const setAuth = useRpAuthStore((s) => s.setAuth);
+  const nextPath = safeNextPath(searchParams.get('next'));
   const [accountNumber, setAccountNumber] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -38,7 +41,7 @@ export default function LoginPage() {
         role: 'RP_MEMBER',
       };
       setAuth(user, data.token);
-      router.push('/dashboard');
+      router.push(nextPath);
     } catch (err: unknown) {
       const e = err as { response?: { data?: { error?: string } } };
       setError(e.response?.data?.error || 'Login failed');
@@ -91,5 +94,19 @@ export default function LoginPage() {
         </Button>
       </form>
     </AuthShell>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex min-h-screen items-center justify-center">
+          <div className="h-10 w-10 animate-spin rounded-full border-2 border-purple-500 border-t-transparent" />
+        </div>
+      }
+    >
+      <LoginForm />
+    </Suspense>
   );
 }

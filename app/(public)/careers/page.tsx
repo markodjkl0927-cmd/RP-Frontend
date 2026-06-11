@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { Suspense, useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { motion, useReducedMotion } from 'framer-motion';
 import { Briefcase } from 'lucide-react';
@@ -11,7 +11,7 @@ import { JobFilters } from '@/components/careers/JobFilters';
 import { Alert } from '@/components/ui/Alert';
 import { gridStagger, riseSpring } from '@/lib/motion';
 
-export default function CareersPage() {
+function CareersPageContent() {
   const searchParams = useSearchParams();
   const applied = searchParams.get('applied') === '1';
   const [jobs, setJobs] = useState<JobListItem[]>([]);
@@ -64,7 +64,8 @@ export default function CareersPage() {
           Careers at R&P
         </h1>
         <p className="mt-2 max-w-3xl text-sm leading-relaxed text-navy-500">
-          Browse open positions, filter by department or location, and apply online with your resume.
+          Browse open positions and read full job descriptions without signing in. Member sign-in is required only
+          when you submit an application with your resume.
         </p>
       </motion.div>
 
@@ -130,5 +131,19 @@ export default function CareersPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function CareersPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex min-h-[40vh] items-center justify-center">
+          <div className="h-10 w-10 animate-spin rounded-full border-2 border-purple-500 border-t-transparent" />
+        </div>
+      }
+    >
+      <CareersPageContent />
+    </Suspense>
   );
 }

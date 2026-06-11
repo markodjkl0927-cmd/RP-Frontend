@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { isPublicPortalPath } from './routes';
 import { useRpAuthStore } from './store';
 
 const api = axios.create({
@@ -18,15 +19,12 @@ api.interceptors.response.use(
   (error) => {
     if (error.response?.status === 401 && typeof window !== 'undefined') {
       const path = window.location.pathname;
-      if (
-        !path.startsWith('/login') &&
-        !path.startsWith('/register') &&
-        !path.startsWith('/recover') &&
-        !path.startsWith('/reset-password') &&
-        !path.startsWith('/admin/login')
-      ) {
+      if (!isPublicPortalPath(path) && !path.startsWith('/admin/login')) {
         useRpAuthStore.getState().clearAuth();
-        window.location.href = path.startsWith('/admin') ? '/admin/login' : '/login';
+        const loginPath = path.startsWith('/admin')
+          ? '/admin/login'
+          : `/login?next=${encodeURIComponent(path)}`;
+        window.location.href = loginPath;
       }
     }
     return Promise.reject(error);

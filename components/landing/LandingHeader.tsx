@@ -8,9 +8,14 @@ import { Logo } from '@/components/Logo';
 import { useRpAuthStore } from '@/lib/store';
 
 const anchors = [
-  { href: '#about', label: 'About' },
-  { href: '#programs', label: 'Programs' },
-  { href: '#membership', label: 'Membership' },
+  { href: '/#about', label: 'About' },
+  { href: '/#programs', label: 'Programs' },
+  { href: '/#membership', label: 'Membership' },
+];
+
+const pages = [
+  { href: '/locator', label: 'Stations' },
+  { href: '/careers', label: 'Careers' },
 ];
 
 export function LandingHeader() {
@@ -31,9 +36,14 @@ export function LandingHeader() {
 
         <nav className="hidden items-center gap-1 md:flex" aria-label="Main">
           {anchors.map(({ href, label }) => (
-            <a key={href} href={href} className="topnav-link-inactive">
+            <Link key={href} href={href} className="topnav-link-inactive">
               {label}
-            </a>
+            </Link>
+          ))}
+          {pages.map(({ href, label }) => (
+            <Link key={href} href={href} className="topnav-link-inactive">
+              {label}
+            </Link>
           ))}
         </nav>
 
@@ -78,14 +88,24 @@ export function LandingHeader() {
         <nav className="border-t border-surface-border px-4 py-3 md:hidden" aria-label="Mobile">
           <div className="flex flex-col gap-1">
             {anchors.map(({ href, label }) => (
-              <a
+              <Link
                 key={href}
                 href={href}
                 onClick={() => setMobileOpen(false)}
                 className="rounded-xl px-3 py-2.5 text-sm font-medium text-navy-600 hover:bg-surface-muted hover:text-navy-900"
               >
                 {label}
-              </a>
+              </Link>
+            ))}
+            {pages.map(({ href, label }) => (
+              <Link
+                key={href}
+                href={href}
+                onClick={() => setMobileOpen(false)}
+                className="rounded-xl px-3 py-2.5 text-sm font-medium text-navy-600 hover:bg-surface-muted hover:text-navy-900"
+              >
+                {label}
+              </Link>
             ))}
             <div className="mt-2 flex flex-col gap-2 border-t border-surface-border pt-3">
               {isMember ? (

@@ -9,6 +9,8 @@ export type Station = {
   phone?: string | null;
   city: string;
   state: string;
+  latitude?: number | null;
+  longitude?: number | null;
 };
 
 function directionsUrl(station: Station) {
@@ -16,11 +18,36 @@ function directionsUrl(station: Station) {
   return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}`;
 }
 
-export function StationCard({ station }: { station: Station }) {
+export function StationCard({
+  station,
+  selected = false,
+  onSelect,
+}: {
+  station: Station;
+  selected?: boolean;
+  onSelect?: () => void;
+}) {
   const title = station.name || 'R&P Fuel Station';
 
   return (
-    <article className="flex h-full flex-col rounded-md border border-surface-border bg-white p-5 transition-colors hover:border-purple-200">
+    <article
+      id={`station-${station.id}`}
+      role={onSelect ? 'button' : undefined}
+      tabIndex={onSelect ? 0 : undefined}
+      onClick={onSelect}
+      onKeyDown={(event) => {
+        if (!onSelect) return;
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          onSelect();
+        }
+      }}
+      className={`flex h-full flex-col rounded-md border bg-white p-5 transition-colors ${
+        selected
+          ? 'border-purple-400 ring-2 ring-purple-200'
+          : 'border-surface-border hover:border-purple-200'
+      } ${onSelect ? 'cursor-pointer' : ''}`}
+    >
       <div className="flex items-start gap-4">
         <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-md bg-purple-50 text-purple-600">
           <Fuel className="h-5 w-5" strokeWidth={1.75} />
@@ -38,6 +65,7 @@ export function StationCard({ station }: { station: Station }) {
         {station.phone ? (
           <a
             href={`tel:${station.phone.replace(/\s/g, '')}`}
+            onClick={(event) => event.stopPropagation()}
             className="inline-flex items-center gap-1.5 text-sm font-medium text-navy-700 transition-colors hover:text-purple-700"
           >
             <Phone className="h-4 w-4 text-purple-600" />
@@ -48,6 +76,7 @@ export function StationCard({ station }: { station: Station }) {
           href={directionsUrl(station)}
           target="_blank"
           rel="noopener noreferrer"
+          onClick={(event) => event.stopPropagation()}
           className="inline-flex items-center gap-1.5 rounded-md bg-purple-600 px-3 py-1.5 text-xs font-semibold text-white transition-colors hover:bg-purple-700"
         >
           <MapPin className="h-3.5 w-3.5" />

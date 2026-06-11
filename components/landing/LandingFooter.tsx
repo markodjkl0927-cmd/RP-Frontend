@@ -42,6 +42,16 @@ export function LandingFooter() {
                     Membership
                   </a>
                 </li>
+                <li>
+                  <Link href="/locator" className={linkClass}>
+                    Station locator
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/careers" className={linkClass}>
+                    Careers
+                  </Link>
+                </li>
               </ul>
             </div>
             <div>

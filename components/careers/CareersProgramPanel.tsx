@@ -26,8 +26,8 @@ export function CareersProgramPanel({ jobCount }: { jobCount: number }) {
       <p className="text-xs font-semibold uppercase tracking-wide text-purple-600">Careers</p>
       <h2 className="mt-1 font-display text-lg font-semibold text-navy-900">Work at R&P Global Energies</h2>
       <p className="mt-2 text-sm leading-relaxed text-navy-500">
-        Explore open roles and apply with your resume. Each listing includes the full description and a simple
-        application form.
+        Explore open roles publicly. Sign in with your member account when you are ready to upload a resume and
+        apply.
       </p>
 
       <div className="mt-5 rounded-md border border-purple-100 bg-purple-50/60 px-4 py-3">

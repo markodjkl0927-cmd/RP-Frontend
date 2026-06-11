@@ -9,15 +9,17 @@ import { LandingFooter } from './LandingFooter';
 
 export function LandingPage() {
   return (
-    <div className="flex min-h-screen flex-col overflow-x-hidden bg-white">
+    <div className="flex min-h-screen flex-col bg-white">
       <LandingHeader />
-      <main>
-        <LandingHero />
-        <LandingAbout />
-        <LandingPrograms />
-        <LandingMembership />
-      </main>
-      <LandingFooter />
+      <div className="flex flex-1 flex-col overflow-x-hidden">
+        <main>
+          <LandingHero />
+          <LandingAbout />
+          <LandingPrograms />
+          <LandingMembership />
+        </main>
+        <LandingFooter />
+      </div>
     </div>
   );
 }

@@ -16,6 +16,7 @@ export default function LocatorPage() {
   const [loadingStates, setLoadingStates] = useState(true);
   const [loadingCities, setLoadingCities] = useState(false);
   const [loadingLocations, setLoadingLocations] = useState(false);
+  const [selectedStationId, setSelectedStationId] = useState<string | null>(null);
   const reduceMotion = useReducedMotion();
 
   useEffect(() => {
@@ -42,9 +43,11 @@ export default function LocatorPage() {
   useEffect(() => {
     if (!state || !city) {
       setLocations([]);
+      setSelectedStationId(null);
       return;
     }
     setLoadingLocations(true);
+    setSelectedStationId(null);
     api
       .get('/rp/locator/locations', { params: { state, city } })
       .then((res) => setLocations(res.data.locations || []))
@@ -55,6 +58,12 @@ export default function LocatorPage() {
     setState('');
     setCity('');
     setLocations([]);
+    setSelectedStationId(null);
+  };
+
+  const selectStation = (id: string) => {
+    setSelectedStationId(id);
+    document.getElementById(`station-${id}`)?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   };
 
   return (
@@ -70,8 +79,8 @@ export default function LocatorPage() {
           Station locator
         </h1>
         <p className="mt-2 max-w-2xl text-sm leading-relaxed text-navy-500">
-          Browse R&P fuel stations across the United States. Filter by state and city, then get directions or
-          call a station directly.
+          Browse R&P fuel stations across the United States — no sign-in required. Filter by state and city,
+          explore the interactive map, then get directions or call a station directly.
         </p>
       </motion.div>
 
@@ -94,6 +103,8 @@ export default function LocatorPage() {
           city={city}
           locations={locations}
           loading={loadingLocations}
+          selectedId={selectedStationId}
+          onSelectStation={selectStation}
         />
       </div>
     </div>

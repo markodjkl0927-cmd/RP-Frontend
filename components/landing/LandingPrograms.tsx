@@ -30,8 +30,8 @@ const programs: Program[] = [
     title: 'Station Locator',
     description: 'Browse R&P fuel locations across the United States by state and city.',
     tag: 'Network',
-    href: '/login',
-    cta: 'Sign in to explore',
+    href: '/locator',
+    cta: 'Find stations',
   },
   {
     icon: Handshake,
@@ -46,7 +46,7 @@ const programs: Program[] = [
     title: 'Careers at R&P',
     description: 'Discover open positions and apply online with your resume.',
     tag: 'Careers',
-    href: '/login',
+    href: '/careers',
     cta: 'View careers',
   },
 ];
@@ -71,8 +71,8 @@ export function LandingPrograms() {
             Programs in one member portal
           </motion.h2>
           <motion.p variants={fadeInUp} className="mt-4 text-lg text-navy-500">
-            Create a free account to access your digital card, find stations, apply for dealership partnership, and
-            explore careers.
+            Browse stations and careers without signing in. Create a free member account for your digital card,
+            dealership applications, and job submissions.
           </motion.p>
         </motion.div>
 
