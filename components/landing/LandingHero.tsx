@@ -53,7 +53,7 @@ export function LandingHero() {
               href="/register"
               className="inline-flex h-12 items-center gap-2 rounded-xl bg-white px-6 text-sm font-semibold text-navy-900 shadow-lg transition-all hover:bg-purple-50 hover:shadow-xl"
             >
-              Create member account
+              Get your R&P Card
               <ArrowRight className="h-4 w-4" />
             </Link>
             <Link

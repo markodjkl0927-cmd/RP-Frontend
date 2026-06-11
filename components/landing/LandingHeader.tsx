@@ -67,7 +67,7 @@ export function LandingHeader() {
                 href="/register"
                 className="rounded-xl bg-purple-500 px-4 py-2 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-purple-400"
               >
-                Join now
+                Discount Card
               </Link>
             </>
           )}
@@ -129,7 +129,7 @@ export function LandingHeader() {
                       'rounded-xl bg-purple-500 px-4 py-2.5 text-center text-sm font-semibold text-white'
                     )}
                   >
-                    Join now
+                    Discount Card
                   </Link>
                 </>
               )}
