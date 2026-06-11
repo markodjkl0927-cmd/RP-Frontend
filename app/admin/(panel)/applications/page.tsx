@@ -14,6 +14,7 @@ import { Select } from '@/components/ui/Select';
 import { Button } from '@/components/ui/Button';
 import { DataTable, DataTableColumn } from '@/components/ui/DataTable';
 import { PaginationBar, PaginationInfo } from '@/components/ui/PaginationBar';
+import { formatDealershipAnswer } from '@/lib/dealership-questionnaire';
 
 const apiBase = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
 
@@ -44,11 +45,22 @@ type CareerApplication = {
 };
 
 const DEALERSHIP_DETAIL_FIELDS: { key: string; label: string }[] = [
-  { key: 'businessAddress', label: 'Business address' },
+  { key: 'legalBusinessName', label: 'Legal business name' },
+  { key: 'contactTitle', label: 'Contact title' },
+  { key: 'website', label: 'Website' },
+  { key: 'businessAddress', label: 'Street address' },
+  { key: 'zipCode', label: 'ZIP code' },
   { key: 'yearsInBusiness', label: 'Years in business' },
+  { key: 'numberOfLocations', label: 'Number of locations' },
+  { key: 'hoursOfOperation', label: 'Hours of operation' },
   { key: 'monthlyVolume', label: 'Est. monthly fuel volume' },
+  { key: 'currentFuelBrands', label: 'Current fuel brands' },
+  { key: 'storageCapacity', label: 'Storage capacity' },
+  { key: 'employeeCount', label: 'Employees' },
+  { key: 'priorRpRelationship', label: 'Prior R&P relationship' },
   { key: 'additionalInfo', label: 'Additional information' },
   { key: 'agreeTerms', label: 'Agreed to be contacted' },
+  { key: 'agreeAccurate', label: 'Confirmed accuracy' },
 ];
 
 function formatAccountNumber(value: string) {
@@ -299,7 +311,11 @@ export default function AdminApplicationsPage() {
       {
         id: 'type',
         header: 'Type',
-        cell: (app) => <span className="text-navy-700">{formatAnswerValue(app.answers.dealershipType as string)}</span>,
+        cell: (app) => (
+          <span className="text-navy-700">
+            {formatDealershipAnswer('dealershipType', app.answers.dealershipType as string)}
+          </span>
+        ),
       },
       {
         id: 'status',
@@ -483,7 +499,7 @@ export default function AdminApplicationsPage() {
               { label: 'Member phone', value: formatAnswerValue(app.member.phone || undefined) },
               ...DEALERSHIP_DETAIL_FIELDS.map(({ key, label }) => ({
                 label,
-                value: formatAnswerValue(answers[key] as string | boolean | undefined),
+                value: formatDealershipAnswer(key, answers[key] as string | boolean | undefined),
               })),
             ];
             return (

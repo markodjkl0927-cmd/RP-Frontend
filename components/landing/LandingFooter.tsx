@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { Logo } from '@/components/Logo';
+import { LegalFooterLinks } from '@/components/legal/LegalFooterLinks';
 
 const linkClass =
   'inline-block text-sm text-navy-700 transition-colors duration-200 hover:text-purple-600';
@@ -23,7 +24,7 @@ export function LandingFooter() {
             </p>
           </div>
 
-          <div className="grid grid-cols-2 gap-x-8 gap-y-10 sm:grid-cols-3 sm:gap-x-10">
+          <div className="grid grid-cols-2 gap-x-8 gap-y-10 sm:grid-cols-4 sm:gap-x-10">
             <div>
               <p className={headingClass}>Explore</p>
               <ul className="mt-4 space-y-3">
@@ -74,7 +75,7 @@ export function LandingFooter() {
                 </li>
               </ul>
             </div>
-            <div className="col-span-2 sm:col-span-1">
+            <div>
               <p className={headingClass}>Portal</p>
               <ul className="mt-4 space-y-3">
                 <li>
@@ -84,14 +85,37 @@ export function LandingFooter() {
                 </li>
               </ul>
             </div>
+            <div>
+              <p className={headingClass}>Legal</p>
+              <ul className="mt-4 space-y-3">
+                <li>
+                  <Link href="/terms" className={linkClass}>
+                    Terms of Service
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/privacy" className={linkClass}>
+                    Privacy Policy
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/cookies" className={linkClass}>
+                    Cookie Policy
+                  </Link>
+                </li>
+              </ul>
+            </div>
           </div>
         </div>
       </div>
 
-      <div className="mt-8 flex h-9 items-center justify-center border-t border-purple-300/70 sm:mt-10">
-        <p className="text-xs text-purple-800/80">
-          © {new Date().getFullYear()} R&P Global Energies Inc. All rights reserved.
-        </p>
+      <div className="mt-8 border-t border-purple-300/70 px-4 py-4 sm:mt-10 sm:px-6 lg:px-8">
+        <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-3 sm:flex-row">
+          <p className="text-xs text-purple-800/80">
+            © {new Date().getFullYear()} R&P Global Energies Inc. All rights reserved.
+          </p>
+          <LegalFooterLinks className="justify-center sm:justify-end [&_a]:text-purple-800/80 [&_a:hover]:text-purple-900" />
+        </div>
       </div>
     </footer>
   );

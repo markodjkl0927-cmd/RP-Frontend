@@ -3,6 +3,9 @@ export function isPublicPortalPath(path: string) {
     path === '/' ||
     path.startsWith('/locator') ||
     path.startsWith('/careers') ||
+    path.startsWith('/terms') ||
+    path.startsWith('/privacy') ||
+    path.startsWith('/cookies') ||
     path.startsWith('/login') ||
     path.startsWith('/register') ||
     path.startsWith('/recover') ||

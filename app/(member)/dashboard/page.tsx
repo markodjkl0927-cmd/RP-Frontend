@@ -1,9 +1,13 @@
 'use client';
 
+import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { motion, useReducedMotion } from 'framer-motion';
-import { Briefcase, CreditCard, Fuel, Globe, Handshake, MapPin, TrendingUp } from 'lucide-react';
+import { Briefcase, ClipboardList, CreditCard, Fuel, Globe, Handshake, MapPin } from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
+import api from '@/lib/api';
 import { useRpAuthStore } from '@/lib/store';
+import { Alert } from '@/components/ui/Alert';
 import { DashboardWelcomeBanner } from '@/components/dashboard/DashboardWelcomeBanner';
 import { DashboardMetricCard } from '@/components/dashboard/DashboardMetricCard';
 import { DashboardMembershipWidget } from '@/components/dashboard/DashboardMembershipWidget';
@@ -61,7 +65,72 @@ const services = [
     icon: Briefcase,
     tag: 'Careers',
   },
+  {
+    href: '/applications',
+    title: 'Application tracking',
+    description: 'See the status of your dealership and career submissions in one place.',
+    icon: ClipboardList,
+    tag: 'Status',
+  },
 ];
+
+type MemberDashboardStats = {
+  membership: { active: boolean; cardReady: boolean };
+  fuelNetwork: { activeStations: number; states: number };
+  programs: { openCareerJobs: number; dealershipOpen: boolean; openTotal: number };
+  applications: { total: number; active: number; dealership: number; career: number };
+};
+
+function buildMetrics(stats: MemberDashboardStats): {
+  label: string;
+  value: string;
+  hint?: string;
+  icon: LucideIcon;
+  href: string;
+}[] {
+  const programHint = [
+    stats.programs.openCareerJobs > 0
+      ? `${stats.programs.openCareerJobs} career role${stats.programs.openCareerJobs === 1 ? '' : 's'}`
+      : 'No career roles open',
+    stats.programs.dealershipOpen ? 'dealership open' : null,
+  ]
+    .filter(Boolean)
+    .join(' · ');
+
+  return [
+    {
+      label: 'Digital card',
+      value: stats.membership.active ? 'Active' : 'Inactive',
+      hint: stats.membership.cardReady ? 'Ready to view' : 'Setting up your card',
+      icon: CreditCard,
+      href: '/card',
+    },
+    {
+      label: 'Fuel network',
+      value: String(stats.fuelNetwork.activeStations),
+      hint: `${stats.fuelNetwork.states} state${stats.fuelNetwork.states === 1 ? '' : 's'} in the locator`,
+      icon: Fuel,
+      href: '/locator',
+    },
+    {
+      label: 'Open programs',
+      value: String(stats.programs.openTotal),
+      hint: programHint,
+      icon: Globe,
+      href: '/careers',
+    },
+    {
+      label: 'My applications',
+      value: String(stats.applications.active),
+      hint:
+        stats.applications.total > 0
+          ? `${stats.applications.total} submitted · ${stats.applications.active} in progress`
+          : 'No submissions yet',
+      icon: ClipboardList,
+      href: '/applications',
+    },
+  ];
+}
 
 const quickActions = [
   {
@@ -92,10 +161,20 @@ const quickActions = [
     icon: Briefcase,
     step: 4,
   },
+  {
+    href: '/applications',
+    label: 'Track applications',
+    description: 'Dealership and career status',
+    icon: ClipboardList,
+    step: 5,
+  },
 ];
 
 export default function DashboardPage() {
   const user = useRpAuthStore((s) => s.user);
+  const [stats, setStats] = useState<MemberDashboardStats | null>(null);
+  const [statsLoading, setStatsLoading] = useState(true);
+  const [statsError, setStatsError] = useState('');
   const acct = user?.accountNumber || '';
   const display = acct ? formatAccountNumber(acct) : '';
   const lastFour = acct.slice(-4);
@@ -106,6 +185,19 @@ export default function DashboardPage() {
     month: 'long',
     day: 'numeric',
   });
+
+  useEffect(() => {
+    api
+      .get('/rp/member/dashboard/stats')
+      .then((res) => setStats(res.data.stats))
+      .catch((err: unknown) => {
+        const ex = err as { response?: { data?: { error?: string } } };
+        setStatsError(ex.response?.data?.error || 'Failed to load dashboard metrics');
+      })
+      .finally(() => setStatsLoading(false));
+  }, []);
+
+  const metrics = useMemo(() => (stats ? buildMetrics(stats) : []), [stats]);
 
   return (
     <>
@@ -119,17 +211,33 @@ export default function DashboardPage() {
       </div>
 
       <motion.div className="space-y-8 pb-6 pt-8">
+        {statsError ? (
+          <Alert>{statsError}</Alert>
+        ) : null}
+
         <motion.div
           variants={pageStagger}
           initial={reduceMotion ? false : 'hidden'}
           animate="visible"
         >
-          <motion.div variants={gridStagger} className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-            <DashboardMetricCard icon={CreditCard} label="Digital card" value="Active" hint="Ready to view" />
-            <DashboardMetricCard icon={Fuel} label="Fuel network" value="US-wide" hint="Station locator" />
-            <DashboardMetricCard icon={Globe} label="Programs" value="2 open" hint="Dealership & careers" />
-            <DashboardMetricCard icon={TrendingUp} label="Membership" value="R&P Global" hint="You deserve the best" />
-          </motion.div>
+          {statsLoading ? (
+            <div className="flex min-h-[8rem] items-center justify-center rounded-md border border-surface-border bg-white">
+              <div className="h-10 w-10 animate-spin rounded-full border-2 border-purple-500 border-t-transparent" />
+            </div>
+          ) : (
+            <motion.div variants={gridStagger} className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+              {metrics.map((metric) => (
+                <Link key={metric.label} href={metric.href} className="block transition-opacity hover:opacity-95">
+                  <DashboardMetricCard
+                    icon={metric.icon}
+                    label={metric.label}
+                    value={metric.value}
+                    hint={metric.hint}
+                  />
+                </Link>
+              ))}
+            </motion.div>
+          )}
         </motion.div>
 
         <motion.div

@@ -1,10 +1,12 @@
 'use client';
 
 import { Suspense, useEffect, useMemo, useState } from 'react';
+import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { motion, useReducedMotion } from 'framer-motion';
 import { Briefcase } from 'lucide-react';
 import api from '@/lib/api';
+import { useRpAuthStore } from '@/lib/store';
 import { CareersProgramPanel } from '@/components/careers/CareersProgramPanel';
 import { JobCard, JobListItem } from '@/components/careers/JobCard';
 import { JobFilters } from '@/components/careers/JobFilters';
@@ -14,6 +16,8 @@ import { gridStagger, riseSpring } from '@/lib/motion';
 function CareersPageContent() {
   const searchParams = useSearchParams();
   const applied = searchParams.get('applied') === '1';
+  const { isAuthenticated, user } = useRpAuthStore();
+  const isMember = isAuthenticated && user?.role === 'RP_MEMBER';
   const [jobs, setJobs] = useState<JobListItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [query, setQuery] = useState('');
@@ -71,7 +75,17 @@ function CareersPageContent() {
 
       {applied ? (
         <div className="mb-6">
-          <Alert variant="success">Your application was submitted successfully. Thank you!</Alert>
+          <Alert variant="success">
+            Your application was submitted successfully. Thank you!
+            {isMember ? (
+              <>
+                {' '}
+                <Link href="/applications" className="font-semibold underline underline-offset-2 hover:text-emerald-900">
+                  Track your application status
+                </Link>
+              </>
+            ) : null}
+          </Alert>
         </div>
       ) : null}
 

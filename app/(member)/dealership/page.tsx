@@ -8,41 +8,18 @@ import api from '@/lib/api';
 import { DEALERSHIP_STEP_META } from '@/components/dealership/DealershipStepNav';
 import { DealershipProgramPanel } from '@/components/dealership/DealershipProgramPanel';
 import { DealershipReviewSummary } from '@/components/dealership/DealershipReviewSummary';
+import {
+  DEALERSHIP_QUESTIONNAIRE_STEPS,
+  getDealershipFieldsForStep,
+  validateDealershipStep,
+  type DealershipFieldDef,
+} from '@/lib/dealership-questionnaire';
 import { Input } from '@/components/ui/Input';
+import { Select } from '@/components/ui/Select';
 import { Button } from '@/components/ui/Button';
 import { Alert } from '@/components/ui/Alert';
 
-type FieldDef = {
-  key: string;
-  label: string;
-  required: boolean;
-  type?: 'email' | 'textarea' | 'checkbox';
-  hint?: string;
-  half?: boolean;
-};
-
-const STEP1: FieldDef[] = [
-  { key: 'companyName', label: 'Company / dealership name', required: true },
-  { key: 'contactName', label: 'Primary contact name', required: true },
-  { key: 'contactEmail', label: 'Contact email', type: 'email', required: true, hint: 'We will use this for application updates.' },
-  { key: 'contactPhone', label: 'Contact phone', required: true },
-];
-
-const STEP2: FieldDef[] = [
-  { key: 'businessAddress', label: 'Business address', required: true },
-  { key: 'city', label: 'City', required: true, half: true },
-  { key: 'state', label: 'State', required: true, half: true },
-  { key: 'yearsInBusiness', label: 'Years in business', required: true, half: true },
-  { key: 'dealershipType', label: 'Dealership type', required: true, half: true, hint: 'e.g. fuel, auto, fleet' },
-];
-
-const STEP3: FieldDef[] = [
-  { key: 'monthlyVolume', label: 'Estimated monthly fuel volume', required: false, hint: 'Optional — helps us understand scale.' },
-  { key: 'additionalInfo', label: 'Tell us about your business', type: 'textarea', required: false },
-  { key: 'agreeTerms', label: 'I agree to be contacted about the R&P dealership program', type: 'checkbox', required: true },
-];
-
-const STEP_FIELDS = [STEP1, STEP2, STEP3];
+const TOTAL_STEPS = DEALERSHIP_QUESTIONNAIRE_STEPS.length;
 
 export default function DealershipPage() {
   const router = useRouter();
@@ -52,39 +29,37 @@ export default function DealershipPage() {
   const [loading, setLoading] = useState(false);
   const reduceMotion = useReducedMotion();
 
-  const fields = STEP_FIELDS[step - 1];
+  const fields = getDealershipFieldsForStep(step);
   const stepMeta = DEALERSHIP_STEP_META[step - 1];
-  const progress = Math.round((step / STEP_FIELDS.length) * 100);
+  const progress = Math.round((step / TOTAL_STEPS) * 100);
 
   const setField = (key: string, value: string | boolean) => {
-    setAnswers((a) => ({ ...a, [key]: value }));
+    setAnswers((current) => ({ ...current, [key]: value }));
     if (error) setError('');
   };
 
-  const validateStep = () => {
-    for (const f of fields) {
-      if (f.required && f.type === 'checkbox') {
-        if (!answers[f.key]) {
-          setError('Please accept the terms to continue.');
-          return false;
-        }
-      } else if (f.required && !String(answers[f.key] || '').trim()) {
-        setError(`${f.label} is required`);
-        return false;
-      }
-    }
-    setError('');
-    return true;
-  };
-
   const next = () => {
-    if (!validateStep()) return;
-    if (step < 3) setStep(step + 1);
-    else submit();
+    const validationError = validateDealershipStep(step, answers);
+    if (validationError) {
+      setError(validationError);
+      return;
+    }
+
+    if (step < TOTAL_STEPS) {
+      setStep(step + 1);
+      return;
+    }
+
+    submit();
   };
 
   const submit = async () => {
-    if (!validateStep()) return;
+    const validationError = validateDealershipStep(step, answers);
+    if (validationError) {
+      setError(validationError);
+      return;
+    }
+
     setLoading(true);
     try {
       await api.post('/rp/dealership/apply', { answers });
@@ -97,46 +72,66 @@ export default function DealershipPage() {
     }
   };
 
-  const renderField = (f: FieldDef) => {
-    if (f.type === 'checkbox') {
+  const renderField = (field: DealershipFieldDef) => {
+    if (field.type === 'checkbox') {
       return (
         <label
-          key={f.key}
+          key={field.key}
           className="flex items-start gap-3 rounded-md border border-surface-border bg-surface-muted/50 p-4 text-sm text-navy-700 sm:col-span-2"
         >
           <input
             type="checkbox"
-            checked={!!answers[f.key]}
-            onChange={(e) => setField(f.key, e.target.checked)}
+            checked={!!answers[field.key]}
+            onChange={(e) => setField(field.key, e.target.checked)}
             className="mt-0.5 h-4 w-4 rounded border-navy-300 text-purple-600 focus:ring-purple-400"
           />
-          <span>{f.label}</span>
+          <span>{field.label}</span>
         </label>
       );
     }
 
-    if (f.type === 'textarea') {
+    if (field.type === 'textarea') {
       return (
-        <div key={f.key} className={f.half ? 'sm:col-span-1' : 'sm:col-span-2'}>
-          <label className="mb-1.5 block text-sm font-medium text-navy-700">{f.label}</label>
+        <div key={field.key} className={field.half ? 'sm:col-span-1' : 'sm:col-span-2'}>
+          <label className="mb-1.5 block text-sm font-medium text-navy-700">{field.label}</label>
           <textarea
             rows={4}
-            value={String(answers[f.key] || '')}
-            onChange={(e) => setField(f.key, e.target.value)}
+            value={String(answers[field.key] || '')}
+            onChange={(e) => setField(field.key, e.target.value)}
             className="input-field min-h-[120px] py-3"
           />
         </div>
       );
     }
 
+    if (field.type === 'select' && field.options) {
+      return (
+        <div key={field.key} className={field.half ? '' : 'sm:col-span-2'}>
+          <Select
+            label={field.label}
+            value={String(answers[field.key] || '')}
+            onChange={(e) => setField(field.key, e.target.value)}
+          >
+            <option value="">Select…</option>
+            {field.options.map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
+            ))}
+          </Select>
+          {field.hint ? <p className="mt-1 text-xs text-navy-400">{field.hint}</p> : null}
+        </div>
+      );
+    }
+
     return (
-      <div key={f.key} className={f.half ? '' : 'sm:col-span-2'}>
+      <div key={field.key} className={field.half ? '' : 'sm:col-span-2'}>
         <Input
-          label={f.label}
-          type={f.type || 'text'}
-          hint={f.hint}
-          value={String(answers[f.key] || '')}
-          onChange={(e) => setField(f.key, e.target.value)}
+          label={field.label}
+          type={field.type || 'text'}
+          hint={field.hint}
+          value={String(answers[field.key] || '')}
+          onChange={(e) => setField(field.key, e.target.value)}
         />
       </div>
     );
@@ -155,8 +150,8 @@ export default function DealershipPage() {
           Dealership application
         </h1>
         <p className="mt-2 max-w-3xl text-sm leading-relaxed text-navy-500">
-          Join the R&P Global Energies dealership network. Complete the guided application below — fields are grouped
-          by topic to keep the process simple.
+          Tell us about your business, fuel operations, and partnership goals. This questionnaire helps our team
+          evaluate dealership fit across the R&P network.
         </p>
       </motion.div>
 
@@ -168,7 +163,7 @@ export default function DealershipPage() {
             <div className="flex flex-wrap items-center justify-between gap-3">
               <div>
                 <p className="text-xs font-semibold uppercase tracking-wide text-navy-500">
-                  Step {step} of {STEP_FIELDS.length}
+                  Step {step} of {TOTAL_STEPS}
                 </p>
                 <h2 className="mt-0.5 font-display text-lg font-semibold text-navy-900">{stepMeta.title}</h2>
                 <p className="text-sm text-navy-500">{stepMeta.description}</p>
@@ -200,8 +195,8 @@ export default function DealershipPage() {
                 exit={reduceMotion ? undefined : { opacity: 0, x: -16 }}
                 transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
               >
-                {step === 3 ? <DealershipReviewSummary answers={answers} /> : null}
-                <div className={`grid gap-4 sm:grid-cols-2 ${step === 3 ? 'mt-5' : ''}`}>
+                {step === 4 ? <DealershipReviewSummary answers={answers} /> : null}
+                <div className={`grid gap-4 sm:grid-cols-2 ${step === 4 ? 'mt-5' : ''}`}>
                   {fields.map(renderField)}
                 </div>
               </motion.div>
@@ -220,10 +215,10 @@ export default function DealershipPage() {
               type="button"
               onClick={next}
               loading={loading}
-              icon={step === 3 ? <Send /> : <ArrowRight />}
+              icon={step === TOTAL_STEPS ? <Send /> : <ArrowRight />}
               iconPosition="right"
             >
-              {step === 3 ? 'Submit application' : 'Continue'}
+              {step === TOTAL_STEPS ? 'Submit application' : 'Continue'}
             </Button>
           </div>
         </div>

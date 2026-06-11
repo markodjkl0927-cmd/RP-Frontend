@@ -138,6 +138,17 @@ function RegisterForm() {
           value={form.confirmPassword}
           onChange={(e) => setForm({ ...form, confirmPassword: e.target.value })}
         />
+        <p className="text-xs leading-relaxed text-navy-500">
+          By creating an account, you agree to our{' '}
+          <Link href="/terms" className="font-semibold text-purple-600 hover:text-purple-500">
+            Terms of Service
+          </Link>{' '}
+          and{' '}
+          <Link href="/privacy" className="font-semibold text-purple-600 hover:text-purple-500">
+            Privacy Policy
+          </Link>
+          .
+        </p>
         <Button type="submit" className="w-full mt-2" loading={loading}>
           Create account
         </Button>

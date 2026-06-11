@@ -69,12 +69,12 @@ export default function RpCardVisual({
             </div>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex w-full items-center justify-between gap-3">
+            <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-purple-200/90">Member card</p>
             <div
-              className="h-9 w-11 rounded-md bg-gradient-to-br from-amber-200/90 via-amber-300/80 to-amber-400/70 shadow-inner"
+              className="h-9 w-11 shrink-0 rounded-md bg-gradient-to-br from-amber-200/90 via-amber-300/80 to-amber-400/70 shadow-inner"
               aria-hidden
             />
-            <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-purple-200/90">Member card</p>
           </div>
 
           <div>

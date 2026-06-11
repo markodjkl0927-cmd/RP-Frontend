@@ -7,6 +7,7 @@ import { useEffect, useState } from 'react';
 import clsx from 'clsx';
 
 import { useRpAuthStore } from '@/lib/store';
+import { LegalFooterLinks } from '@/components/legal/LegalFooterLinks';
 import { Logo } from './Logo';
 
 const homeSections = [
@@ -161,8 +162,9 @@ export default function PublicShell({ children }: { children: React.ReactNode })
       <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">{children}</main>
 
       <footer className="border-t border-surface-border bg-white py-6">
-        <div className="mx-auto max-w-7xl px-4 text-center text-xs text-navy-400 sm:px-6 lg:px-8">
-          © {new Date().getFullYear()} R&P Global Energies Inc.
+        <div className="mx-auto flex max-w-7xl flex-col items-center gap-3 px-4 sm:flex-row sm:justify-between sm:px-6 lg:px-8">
+          <p className="text-xs text-navy-400">© {new Date().getFullYear()} R&P Global Energies Inc.</p>
+          <LegalFooterLinks />
         </div>
       </footer>
     </div>

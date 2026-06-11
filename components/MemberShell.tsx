@@ -5,6 +5,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import {
   Briefcase,
   ChevronDown,
+  ClipboardList,
   CreditCard,
   Handshake,
   LayoutDashboard,
@@ -18,6 +19,7 @@ import { useEffect, useRef, useState } from 'react';
 import clsx from 'clsx';
 
 import { useRpAuthStore } from '@/lib/store';
+import { LegalFooterLinks } from '@/components/legal/LegalFooterLinks';
 import { Logo } from './Logo';
 
 const nav = [
@@ -26,6 +28,7 @@ const nav = [
   { href: '/locator', label: 'Stations', icon: MapPin },
   { href: '/dealership', label: 'Dealership', icon: Handshake },
   { href: '/careers', label: 'Careers', icon: Briefcase },
+  { href: '/applications', label: 'Applications', icon: ClipboardList },
 ];
 
 export default function MemberShell({ children }: { children: React.ReactNode }) {
@@ -67,7 +70,7 @@ export default function MemberShell({ children }: { children: React.ReactNode })
 
             <nav className="hidden items-center gap-1 lg:flex" aria-label="Main">
               {nav.map(({ href, label, icon: Icon }) => {
-                const active = pathname === href;
+                const active = pathname === href || pathname.startsWith(`${href}/`);
                 return (
                   <Link
                     key={href}
@@ -162,7 +165,7 @@ export default function MemberShell({ children }: { children: React.ReactNode })
           >
             <div className="flex flex-col gap-1">
               {nav.map(({ href, label, icon: Icon }) => {
-                const active = pathname === href;
+                const active = pathname === href || pathname.startsWith(`${href}/`);
                 return (
                   <Link
                     key={href}
@@ -212,8 +215,11 @@ export default function MemberShell({ children }: { children: React.ReactNode })
       </main>
 
       <footer className="border-t border-surface-border bg-white py-6">
-        <div className="mx-auto max-w-7xl px-4 text-center text-xs text-navy-400 sm:px-6 lg:px-8">
-          © {new Date().getFullYear()} R&P Global Energies Inc. · Member portal
+        <div className="mx-auto flex max-w-7xl flex-col items-center gap-3 px-4 sm:flex-row sm:justify-between sm:px-6 lg:px-8">
+          <p className="text-xs text-navy-400">
+            © {new Date().getFullYear()} R&P Global Energies Inc. · Member portal
+          </p>
+          <LegalFooterLinks />
         </div>
       </footer>
     </div>

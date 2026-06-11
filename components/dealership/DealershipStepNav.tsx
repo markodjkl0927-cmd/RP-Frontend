@@ -1,20 +1,19 @@
 'use client';
 
-import { Building2, Check, ClipboardCheck, MapPinned } from 'lucide-react';
+import { Building2, Check, ClipboardCheck, Fuel, MapPinned } from 'lucide-react';
 import clsx from 'clsx';
 
-const STEPS = [
-  { id: 1, title: 'Company', description: 'Business & contact', icon: Building2 },
-  { id: 2, title: 'Location', description: 'Address & operations', icon: MapPinned },
-  { id: 3, title: 'Review', description: 'Program fit & submit', icon: ClipboardCheck },
-] as const;
+import { DEALERSHIP_QUESTIONNAIRE_STEPS } from '@/lib/dealership-questionnaire';
+
+const STEP_ICONS = [Building2, MapPinned, Fuel, ClipboardCheck] as const;
 
 export function DealershipStepNav({ current }: { current: number }) {
   return (
     <ol className="space-y-1">
-      {STEPS.map(({ id, title, description, icon: Icon }) => {
+      {DEALERSHIP_QUESTIONNAIRE_STEPS.map(({ id, title, description }, index) => {
         const done = id < current;
         const active = id === current;
+        const Icon = STEP_ICONS[index];
 
         return (
           <li
@@ -46,4 +45,4 @@ export function DealershipStepNav({ current }: { current: number }) {
   );
 }
 
-export const DEALERSHIP_STEP_META = STEPS;
+export const DEALERSHIP_STEP_META = DEALERSHIP_QUESTIONNAIRE_STEPS;

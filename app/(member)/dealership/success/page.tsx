@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { motion, useReducedMotion } from 'framer-motion';
-import { CheckCircle2, LayoutDashboard, MapPin } from 'lucide-react';
+import { CheckCircle2, ClipboardList, LayoutDashboard, MapPin } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 
 export default function DealershipSuccessPage() {
@@ -44,8 +44,13 @@ export default function DealershipSuccessPage() {
         </div>
 
         <div className="mt-8 flex flex-wrap justify-center gap-3">
+          <Link href="/applications">
+            <Button icon={<ClipboardList />}>Track application</Button>
+          </Link>
           <Link href="/dashboard">
-            <Button icon={<LayoutDashboard />}>Back to dashboard</Button>
+            <Button variant="secondary" icon={<LayoutDashboard />}>
+              Back to dashboard
+            </Button>
           </Link>
           <Link href="/locator">
             <Button variant="secondary" icon={<MapPin />}>

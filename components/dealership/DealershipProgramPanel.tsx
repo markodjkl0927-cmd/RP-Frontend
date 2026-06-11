@@ -28,7 +28,7 @@ export function DealershipProgramPanel({ currentStep }: { currentStep: number })
       <p className="text-xs font-semibold uppercase tracking-wide text-purple-600">Partnership</p>
       <h2 className="mt-1 font-display text-lg font-semibold text-navy-900">Dealership program</h2>
       <p className="mt-2 text-sm leading-relaxed text-navy-500">
-        Apply to join the R&P Global Energies dealership network. Complete all three steps — most applications
+        Apply to join the R&P Global Energies dealership network. Complete all four steps — most applications
         take under 10 minutes.
       </p>
 
